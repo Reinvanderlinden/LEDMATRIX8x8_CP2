@@ -10,38 +10,37 @@ byte rows[2][8] = { {0b00010110,0b00010110,0b00010110,0b00000110,0b00010110,0b00
 byte t1;
 byte t2;
 int row = 0;
-int del = 200;
+int del = 4;
 boolean shiftLeftRight = false;
 
-int IN[8][8]={   {1,0,0,0,0,0,0,0},
-                 {0,1,0,0,0,0,0,0},
-                 {0,0,1,0,0,0,0,0},
-                 {0,0,0,1,0,0,0,0},
-                 {0,0,0,0,1,0,0,0},
-                 {0,0,0,0,0,1,0,0},
-                 {0,0,0,0,0,0,1,0},
-                 {0,0,0,0,0,0,0,1}};
+int IN[8][8]={   {0,0,0,0,0,0,0,0},
+                 {0,0,0,0,0,0,0,0},
+                 {0,0,1,0,0,1,0,0},
+                 {0,0,0,0,0,0,0,0},
+                 {0,0,0,0,0,0,0,0},
+                 {0,1,0,0,0,0,1,0},
+                 {0,0,1,1,1,1,0,0},
+                 {0,0,0,0,0,0,0,0}};
                  
-int IN2[8][8]={  {0,0,0,0,0,0,0,1},
-                 {0,0,0,0,0,0,1,0},
-                 {0,0,0,0,0,1,0,0},
-                 {0,0,0,0,1,0,0,0},
-                 {0,0,0,1,0,0,0,0},
-                 {0,0,1,0,0,0,0,0},
-                 {0,1,0,0,0,0,0,0},
-                 {1,0,0,0,0,0,0,0}};                 
+int IN2[8][8]={  {0,0,0,0,0,0,0,0},
+                 {0,0,0,0,0,0,0,0},
+                 {0,0,0,0,0,0,0,0},
+                 {0,0,0,0,0,0,0,0},
+                 {0,0,0,0,0,0,0,0},
+                 {0,0,0,0,0,0,0,0},
+                 {0,0,0,0,0,0,0,0},
+                 {0,0,0,0,0,0,0,0}};                 
 
 
 void setup() {
   Serial.begin(115200);
-  //Instelen van de uitgangspinnen
   pinMode(shiftClockPin, OUTPUT);
   pinMode(latchClockPin, OUTPUT);
   pinMode(serialInputPin, OUTPUT);
   pinMode(swPin, INPUT);
   pinMode(sw2Pin, INPUT);
-  attachInterrupt(digitalPinToInterrupt(swPin),blink, FALLING);
-  attachInterrupt(digitalPinToInterrupt(sw2Pin),blink2, FALLING);
+  attachInterrupt(digitalPinToInterrupt(swPin),Klick, FALLING);
+  attachInterrupt(digitalPinToInterrupt(sw2Pin),Klik2, FALLING);
 }
 
 void loop() {
@@ -80,12 +79,12 @@ void Klik2 () {
 
  byte Translation1(int in[8][8]){
   byte temp;
-  //KOLOM 1
+ //KOLOM 1
   t2 ^= in[row][0];
-  //KOLOM 2
-    temp = in[row][1];
-    temp <<= 5;
-    t2 ^= temp;
+ //KOLOM 2
+   temp = in[row][1];
+   temp <<= 5;
+   t2 ^= temp;
   //KOLOM 4
     temp = in[row][3];
     temp <<= 3;
@@ -127,5 +126,3 @@ byte Translation2(int in[8][8]){
   digitalWrite(latchClockPin, HIGH);
   digitalWrite(latchClockPin, LOW);
 }
-
-  
