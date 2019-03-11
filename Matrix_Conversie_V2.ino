@@ -1,12 +1,17 @@
-
 byte Translation1(int in[]);
 byte Translation2(int in[]);
-
 const int shiftClockPin = 5;  //SH
 const int latchClockPin = 6;  //ST
 const int serialInputPin = 9; //DS
 const int swPin = 2; //SW3
 const int sw2Pin = 3; //SW3
+byte rows[2][8] = { {0b00010110,0b00010110,0b00010110,0b00000110,0b00010110,0b00010010,0b00010100,0b00010110},
+                    {0b01010110,0b10010110,0b11010010,0b11010110,0b11010100,0b11010110,0b11010110,0b11000110}};
+byte t1;
+byte t2;
+int row = 0;
+int del = 200;
+boolean shiftLeftRight = false;
 
 int IN[8][8]={   {1,0,0,0,0,0,0,0},
                  {0,1,0,0,0,0,0,0},
@@ -26,19 +31,6 @@ int IN2[8][8]={  {0,0,0,0,0,0,0,1},
                  {0,1,0,0,0,0,0,0},
                  {1,0,0,0,0,0,0,0}};                 
 
-byte rows[2][8] = { {0b00010110,0b00010110,0b00010110,0b00000110,0b00010110,0b00010010,0b00010100,0b00010110},
-                    {0b01010110,0b10010110,0b11010010,0b11010110,0b11010100,0b11010110,0b11010110,0b11000110}};
-
-//K5 K3 K6 R4 K8 R6 R7 K7
-//R1 R2 K2 R8 K4 R3 R5 K1
-byte t1 = 0b00010110;
-byte t2 = 0b11010110;
-int row = 0;
-float t = 0b0001011011010110;
-
-int del = 200;
-
-boolean shiftLeftRight = false;
 
 void setup() {
   Serial.begin(115200);
@@ -55,7 +47,7 @@ void setup() {
 void loop() {
   byte s2;
   byte s1;
-
+  
   for (int i = 0; i <=7;i++){
    row = i;
    t1 = rows[0][i];
@@ -66,7 +58,6 @@ void loop() {
    displayData(s2);
    delay(del); 
   }
-
   for (int i = 0; i <=7;i++){
    row = i;
    t1 = rows[0][i];
@@ -77,12 +68,57 @@ void loop() {
    displayData(s2);
    delay(del); 
   }
-    
-   
 }
 
-void displayData(byte message) {
-  // put your main code here, to run repeatedly:
+void Klick () {
+  del -=10;
+  }
+
+void Klik2 () {
+  del +=100;
+  }
+
+ byte Translation1(int in[8][8]){
+  byte temp;
+  //KOLOM 1
+  t2 ^= in[row][0];
+  //KOLOM 2
+    temp = in[row][1];
+    temp <<= 5;
+    t2 ^= temp;
+  //KOLOM 4
+    temp = in[row][3];
+    temp <<= 3;
+    t2 ^= temp;
+  return t2;
+  }
+
+byte Translation2(int in[8][8]){
+    byte temp;
+    //KOLOM 3
+    temp = in[row][2];
+    temp <<= 6;
+    t1 ^= temp;
+  //KOLOM 5
+    temp = in[row][4];
+    temp <<= 7;
+    t1 ^= temp;
+  //KOLOM 6
+    temp = in[row][5];
+    temp <<= 5;
+    t1 ^= temp;
+  //KOLOM 7
+    temp = in[row][6];
+    temp <<= 0;
+    t1 ^= temp;
+  //KOLOM 8
+    temp = in[row][7];
+    temp <<= 3;
+    t1 ^= temp;
+  return t1;
+  }
+
+  void displayData(byte message) {
   for (int i = 0; i <= 7; i++) {
     digitalWrite(serialInputPin, bitRead(message, i));
     digitalWrite(shiftClockPin, HIGH);
@@ -90,67 +126,6 @@ void displayData(byte message) {
   }
   digitalWrite(latchClockPin, HIGH);
   digitalWrite(latchClockPin, LOW);
-
 }
 
-void blink () {
-  del -=10;
-  }
-void blink2 () {
-  del +=100;
-  }
- 
-
-byte Translation1(int in[8][8]){
-  
-  byte temp;
-  //KOLOM 1
-  t2 ^= in[row][0];
-
-  //KOLOM 2
-    temp = in[row][1];
-    temp <<= 5;
-    t2 ^= temp;
-
-  //KOLOM 4
-
-    temp = in[row][3];
-    temp <<= 3;
-    t2 ^= temp;
-
-  return t2;
-  }
-
-  byte Translation2(int in[8][8]){
-    
-    byte temp;
-    
-    //KOLOM 3
-    temp = in[row][2];
-    temp <<= 6;
-    t1 ^= temp;
-
-  //KOLOM 5
-    temp = in[row][4];
-    temp <<= 7;
-    t1 ^= temp;
-
-  //KOLOM 6
-    temp = in[row][5];
-    temp <<= 5;
-    t1 ^= temp;
-
-  //KOLOM 7
-    temp = in[row][6];
-    temp <<= 0;
-    t1 ^= temp;
-
-  //KOLOM 8
-    temp = in[row][7];
-    temp <<= 3;
-    t1 ^= temp;
-
-  return t1;
-  }
-  
   
