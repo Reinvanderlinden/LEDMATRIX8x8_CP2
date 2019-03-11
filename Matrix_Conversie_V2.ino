@@ -10,17 +10,17 @@ byte rows[2][8] = { {0b00010110,0b00010110,0b00010110,0b00000110,0b00010110,0b00
 byte t1;
 byte t2;
 int row = 0;
-int del = 4;
+int del = 300;
 boolean shiftLeftRight = false;
 
-int IN[8][8]={   {0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0},
-                 {0,0,1,0,0,1,0,0},
-                 {0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0},
-                 {0,1,0,0,0,0,1,0},
-                 {0,0,1,1,1,1,0,0},
-                 {0,0,0,0,0,0,0,0}};
+int IN[8][8]={   {2,0,0,4,4,0,0,3},
+                 {0,2,0,0,0,0,3,0},
+                 {0,0,2,4,4,3,0,0},
+                 {0,0,0,2,3,0,0,0},
+                 {0,0,0,3,2,0,0,0},
+                 {0,0,3,4,4,2,0,0},
+                 {0,3,0,0,0,0,2,0},
+                 {3,0,0,4,4,0,0,2}};
                  
 int IN2[8][8]={  {0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0},
@@ -46,18 +46,20 @@ void setup() {
 void loop() {
   byte s2;
   byte s1;
-  
-  for (int i = 0; i <=7;i++){
-   row = i;
-   t1 = rows[0][i];
-   t2 = rows[1][i];
-   s2 = Translation1(IN);
-   s1 = Translation2(IN);
-   displayData(s1);
-   displayData(s2);
-   delay(del); 
-  }
-  for (int i = 0; i <=7;i++){
+  for(int a = 2; a <=4;a++){
+   for (int b = 0; b <=7;b++){
+     for (int c = 0; c <=7;c++){
+       if(IN[b][c]==a)
+        {
+           IN2[b][c]=1;
+        }
+        else
+        {
+          IN2[b][c]=0;
+        }
+     }
+   }
+   for (int i = 0; i <=7;i++){
    row = i;
    t1 = rows[0][i];
    t2 = rows[1][i];
@@ -66,6 +68,7 @@ void loop() {
    displayData(s1);
    displayData(s2);
    delay(del); 
+  }
   }
 }
 
