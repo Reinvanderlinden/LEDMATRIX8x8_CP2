@@ -1,3 +1,6 @@
+/*
+Made By Rein van der Linden - 2019
+*/
 byte Translation1(int in[]);
 byte Translation2(int in[]);
 const int shiftClockPin = 5;  //SH
@@ -10,7 +13,7 @@ byte rows[2][8] = { {0b00010110,0b00010110,0b00010110,0b00000110,0b00010110,0b00
 byte t1;
 byte t2;
 int row = 0;
-int del = 300;
+int del = 20;
 boolean shiftLeftRight = false;
 
 int IN[8][8]={   {2,0,0,4,4,0,0,3},
@@ -60,6 +63,7 @@ void loop() {
      }
    }
    for (int i = 0; i <=7;i++){
+   //ROW  1 TO 8
    row = i;
    t1 = rows[0][i];
    t2 = rows[1][i];
@@ -80,10 +84,10 @@ void Klik2 () {
   del +=100;
   }
 
- byte Translation1(int in[8][8]){
+byte Translation1(int in[8][8]){
   byte temp;
  //KOLOM 1
-  t2 ^= in[row][0];
+   t2 ^= in[row][0];
  //KOLOM 2
    temp = in[row][1];
    temp <<= 5;
