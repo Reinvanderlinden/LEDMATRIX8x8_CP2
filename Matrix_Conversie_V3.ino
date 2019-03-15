@@ -26,8 +26,8 @@ int IN[8][8]={   {2,3,4,5,6,7,8,9},
                  {23,22,21,20,19,18,17,16}};
                  
 int IN3[8][8]={  {0,0,0,0,0,0,0,0},
-                 {0,0,3,0,0,3,0,0},
-                 {0,0,2,0,0,2,0,0},
+                 {0,0,1,0,0,1,0,0},
+                 {0,0,1,0,0,1,0,0},
                  {0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0},
                  {0,2,3,3,3,3,2,0},
@@ -57,11 +57,12 @@ void setup() {
 
 void loop() {
   uint16_t s1;
-  for(int a = 2; a <=3;a++){
-   for(int frames = 1; frames <=30;frames++){
+  
+ for(int a = 2; a <=3;a++){
+  for(int frames = 1; frames <=300;frames++){
    for (int b = 0; b <=7;b++){
      for (int c = 0; c <=7;c++){
-       if(IN3[b][c]==a)
+       if(IN3[b][c]==a || IN3[b][c]==1)
         {
            IN2[b][c]=1;
         }
@@ -71,26 +72,22 @@ void loop() {
         }
      }
    }
-   
-   
+  
    for (int i = 0; i <=7;i++){
    //ROW  1 TO 8
    row = i;
    t1 = rows[i];
-   if (IN[row][0]==0&&IN[row][1]==0&&IN[row][2]==0&&IN[row][3]==0&&IN[row][4]==0&&IN[row][5]==0&&IN[row][6]==0&&IN[row][7]==0){
-    goto skip;
-  }
-  
    s1 = Translation(IN2);
    Serial.println(s1);
    displayData(s1);
    delay(del); 
-   skip :
-   delay(1);
+   }
   }
-  }
-  }
+   }
+   
 }
+
+
 
 void Klick () {
   del -=10;
