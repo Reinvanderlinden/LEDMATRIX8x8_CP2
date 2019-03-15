@@ -1,5 +1,5 @@
 /*
-Made By Rein van der Linden - 2019
+Made By Rein van der Linden / Sam Knoors - 2019
 */
 uint16_t Translation(int in[]);
 uint16_t Translation2(int in[]);
