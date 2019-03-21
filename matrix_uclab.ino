@@ -99,12 +99,6 @@ void setup() {
     bericht[rijen] |= col_mask[rijen];
     Serial.println(bericht[rijen], BIN);
   }
-
-for(int t=0;t<8;t++)
-{
-  
-}
-  
 }
 
 
