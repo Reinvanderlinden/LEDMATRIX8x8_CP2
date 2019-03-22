@@ -43,6 +43,7 @@ int IN2[8][8]={  {0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0}};                 
 
+int framecount = 300;
 
 void setup() {
   Serial.begin(115200);
@@ -59,7 +60,7 @@ void loop() {
   uint16_t s1;
   
  for(int a = 2; a <=3;a++){
-  for(int frames = 1; frames <=300;frames++){
+  for(int frames = 1; frames <=framecount;frames++){
    for (int b = 0; b <=7;b++){
      for (int c = 0; c <=7;c++){
        if(IN3[b][c]==a || IN3[b][c]==1)
