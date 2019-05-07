@@ -4,6 +4,7 @@ Made By Rein van der Linden / Sam Knoors - 2019
 
 #define outputA 6
 #define outputB 7
+const int swPin = 2; //SW1
 uint16_t Translation(int in[]);
 uint16_t Translation2(int in[]);
 const int shiftClockPin = 5;  //SH
@@ -15,19 +16,29 @@ int row = 0;
 int framecount = 30;
 int maxframes = 16;
 int anilength = 4;
+int Animation = 0;
 void Speed();
 int aState;
 int aLastState;
                 
 //Animation Array 1 
-int IN3[8][27]={ {0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0,0,0,0,1,1,3,0,0,0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0,0,3,3,1,1,2,3,0,0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0,0,0,2,1,1,2,0,0,0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0,0,0,2,1,1,4,0,0,0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0,0,0,2,1,1,3,4,0,0,0,0,0,0,0,0,0},
-                 {0,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,0}}; 
+int IN3[2][8][27]={{{0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0},
+                   {0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0},
+                   {0,0,0,0,0,0,0,0,0,0,0,1,1,3,0,0,0,0,0,0,0,0,0,0},
+                   {0,0,0,0,0,0,0,0,0,3,3,1,1,2,3,0,0,0,0,0,0,0,0,0},
+                   {0,0,0,0,0,0,0,0,0,0,2,1,1,2,0,0,0,0,0,0,0,0,0,0},
+                   {0,0,0,0,0,0,0,0,0,0,2,1,1,4,0,0,0,0,0,0,0,0,0,0},
+                   {0,0,0,0,0,0,0,0,0,0,2,1,1,3,4,0,0,0,0,0,0,0,0,0},
+                   {0,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,0}},
+                   
+                 {{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+                  {0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0},
+                  {0,0,0,0,0,0,0,0,0,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0},
+                  {0,0,0,0,0,0,0,0,2,2,1,1,1,1,1,1,0,0,0,0,0,0,0,0},
+                  {0,0,0,1,0,0,0,0,2,2,2,1,1,1,1,1,0,0,0,0,0,1,0,0},
+                  {0,0,0,0,0,0,0,0,2,2,1,1,1,1,1,1,0,0,0,0,0,0,0,0},
+                  {0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0},
+                  {0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0}}}; 
 
 //Animation Array 2                 
 int IN4[8][27]={ {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -54,6 +65,8 @@ void setup() {
   pinMode(shiftClockPin, OUTPUT);
   pinMode(latchClockPin, OUTPUT);
   pinMode(serialInputPin, OUTPUT);
+  pinMode(swPin, INPUT);
+  attachInterrupt(digitalPinToInterrupt(swPin),BTNpress, FALLING);
 }
 
 void loop() {
@@ -64,7 +77,7 @@ void loop() {
   for(int frames = 1; frames <=framecount;frames++){
    for (int b = 0; b <=7;b++){
      for (int c = 0; c <=7;c++){
-       if(IN3[b][c+AniPosistion]==a || IN3[b][c+AniPosistion]==1)
+       if(IN3[Animation][b][c+AniPosistion]==a || IN3[Animation][b][c+AniPosistion]==1)
         {
            IN2[b][c]=1;
         }
@@ -143,6 +156,11 @@ uint16_t Translation (int in[8][8]){
   digitalWrite(latchClockPin, HIGH);
   digitalWrite(latchClockPin, LOW);
   digitalWrite(shiftClockPin, LOW);
+}
+
+void BTNpress () {
+  if(Animation == 1) {Animation =0;}
+  else {Animation =1;}
 }
 
 void Speed() { 
