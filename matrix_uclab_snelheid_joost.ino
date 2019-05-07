@@ -1,9 +1,9 @@
 /*
 Made By Rein van der Linden / Sam Knoors - 2019
 */
+
 #define outputA 6
 #define outputB 7
-
 uint16_t Translation(int in[]);
 uint16_t Translation2(int in[]);
 const int shiftClockPin = 5;  //SH
@@ -11,12 +11,15 @@ const int latchClockPin = 8;  //ST
 const int serialInputPin = 9; //DS
 uint16_t rows [8] = {0b0101011000010110,0b1001011000010110,0b1101001000010110,0b1101011000000110,0b1101010000010110,0b1101011000010010,0b1101011000010100,0b1100011000010110};
 uint16_t t1;
-uint16_t  t2;
 int row = 0;
-int del = 0;
-boolean shiftLeftRight = false;
-                 
-//Animation 1 
+int framecount = 30;
+int maxframes = 16;
+int anilength = 4;
+void Speed();
+int aState;
+int aLastState;
+                
+//Animation Array 1 
 int IN3[8][27]={ {0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0,0,0,0,1,1,3,0,0,0,0,0,0,0,0,0,0},
@@ -26,7 +29,7 @@ int IN3[8][27]={ {0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0,0,0,2,1,1,3,4,0,0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0,0,0,2,3,0,0,0,0,0,0,0,0,0,0,0,0}}; 
 
-//Animation 2                 
+//Animation Array 2                 
 int IN4[8][27]={ {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0,0,1,1,0,1,1,1,0,0,0,0,0,0,0,0,0},
@@ -36,7 +39,7 @@ int IN4[8][27]={ {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0}};
   
-                 
+//Final Array this is where the projected image is created from the animation array                 
 int IN2[8][8]={  {0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0},
@@ -46,33 +49,22 @@ int IN2[8][8]={  {0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0},
                  {0,0,0,0,0,0,0,0}};                 
 
-int framecount = 30;
-int  maxframes = 16;
-int add = 1;
-int anilength = 4;
-void Speed();
-int aState;
-int aLastState;
-
 void setup() {
   Serial.begin(115200);
   pinMode(shiftClockPin, OUTPUT);
   pinMode(latchClockPin, OUTPUT);
   pinMode(serialInputPin, OUTPUT);
-  //attachInterrupt(digitalPinToInterrupt(swPin),Speed, RISING);
-  //attachInterrupt(digitalPinToInterrupt(sw2Pin),Speed, RISING);
 }
 
 void loop() {
  uint16_t s1;
- int g = 0; 
- while(g<=maxframes){ 
-  
+ int AniPosistion = 0; 
+ while(AniPosistion<=maxframes){ 
  for(int a = 2; a <=anilength;a++){
   for(int frames = 1; frames <=framecount;frames++){
    for (int b = 0; b <=7;b++){
      for (int c = 0; c <=7;c++){
-       if(IN3[b][c+g]==a || IN3[b][c+g]==1)
+       if(IN3[b][c+AniPosistion]==a || IN3[b][c+AniPosistion]==1)
         {
            IN2[b][c]=1;
         }
@@ -88,29 +80,14 @@ void loop() {
    row = i;
    t1 = rows[i];
    s1 = Translation(IN2);
-   //Serial.println(s1);
    displayData(s1);
-   delay(del); 
    Speed();
    }
   }
   }
-   g+=add;
-   //Serial.println(g);
+   AniPosistion++;
   }
 }
-
-
-
-void Klick () {
-      anilength +=1;
-      delay(10);
-  }
-
-void Klik2 () {
-      anilength -=1;
-      delay(10);
-  }
 
 uint16_t Translation (int in[8][8]){
   uint16_t temp = 0;
@@ -148,25 +125,26 @@ uint16_t Translation (int in[8][8]){
     temp = in[row][3];
     temp <<= 11;
     t1 ^= temp;
-    
+  
   return t1;
   }
 
 
   void displayData(uint16_t  message) {
    digitalWrite(latchClockPin, LOW);
-  for (int i = 0; i <= 15; i++) {
+   for (int i = 0; i <= 15; i++) 
+    {
+      digitalWrite(shiftClockPin, HIGH);
+      digitalWrite(serialInputPin, bitRead(message, i));
+      digitalWrite(shiftClockPin, LOW);
+    }
     
-    digitalWrite(shiftClockPin, HIGH);
-    digitalWrite(serialInputPin, bitRead(message, i));
-    
-    digitalWrite(shiftClockPin, LOW);
-  }
   digitalWrite(shiftClockPin, HIGH);
   digitalWrite(latchClockPin, HIGH);
   digitalWrite(latchClockPin, LOW);
   digitalWrite(shiftClockPin, LOW);
 }
+
 void Speed() { 
    aState = digitalRead(outputA); // Reads the "current" state of the outputA
    // If the previous and the current state of the outputA are different, that means a Pulse has occured
