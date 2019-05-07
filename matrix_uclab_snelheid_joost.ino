@@ -173,7 +173,11 @@ void Speed() {
    if (aState != aLastState){     
      // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
      if (digitalRead(outputB) != aState) {
-      if (framecount >= 11)
+      if (framecount >= 11 && framecount <= 20)
+      {
+       framecount -=1;
+      }
+      else if (framecount >= 20)
       {
        framecount -=10;
       }
