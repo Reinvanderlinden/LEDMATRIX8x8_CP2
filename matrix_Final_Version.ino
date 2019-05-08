@@ -1,4 +1,10 @@
 /*
+* Auteur 1: Sam Knoors
+* Auteur 2: Rein van der Linden
+* Link naar github repository: 
+*/
+
+/*
 Made By Rein van der Linden / Sam Knoors - 2019
 */
 
