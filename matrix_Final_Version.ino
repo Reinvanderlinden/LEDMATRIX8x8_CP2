@@ -1,7 +1,7 @@
 /*
 * Auteur 1: Sam Knoors
 * Auteur 2: Rein van der Linden
-* Link naar github repository: 
+* Link naar github repository: https://github.com/Reinvanderlinden/LEDMATRIX8x8_CP2/blob/master/matrix_Final_Version.ino
 */
 
 /*
